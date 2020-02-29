@@ -1,7 +1,7 @@
 <?php
 
 namespace Hcode;
-
+# coloquei a linha abaixo, sem isso da erro que nao encontra a classe Page
 require_once('Page.php');
 
 class PageAdmin extends Page {

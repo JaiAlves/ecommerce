@@ -1,0 +1,4 @@
+log/
+vendor/phpmailer/
+vendor/rain/
+vendor/slim/

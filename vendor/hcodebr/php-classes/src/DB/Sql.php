@@ -2,17 +2,21 @@
 
 namespace Hcode\DB;
 
+use Hcode\Util\Lg;
+
 class Sql {
 
 	const HOSTNAME = "127.0.0.1";
 	const USERNAME = "root";
-	const PASSWORD = "senha do bco vai aq...";
+	const PASSWORD = "";
 	const DBNAME = "db_ecommerce";
 
 	private $conn;
+	private $lg;
 
 	public function __construct()
 	{
+		$this->lg = new Lg("C:\\projetos\\ecommerce\\log\\sql\\");
 
 		$this->conn = new \PDO(
 			"mysql:dbname=".Sql::DBNAME.";host=".Sql::HOSTNAME, 
@@ -51,8 +55,16 @@ class Sql {
 
 	}
 
-	public function select($rawQuery, $params = array()):array
+	public function select($rawQuery, $params = array(), $debug = false):array
 	{
+		if ($debug) {
+			$this->log('strSql= '.$rawQuery);
+			if (!isset($params)) {
+				$this->log('array vazio ...');
+			} else {
+				$this->log('array: '.implode("|  ", $params));
+			}
+		}
 
 		$stmt = $this->conn->prepare($rawQuery);
 
@@ -62,6 +74,24 @@ class Sql {
 
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+	}
+	
+	public function log($msg) {
+		/*
+		date_default_timezone_set("America/Sao_Paulo");
+		setlocale(LC_ALL, 'pt_BR');
+
+ 
+		$nome_arquivo = date("d-m-y H") ." hs ";
+
+		$file = fopen("C:\\projetos\\ecommerce\\log\\sql\\" . $nome_arquivo .".txt" ,"a");
+
+		fwrite($file, date("d-m-y H:i:s"));
+		fwrite($file, " ");		
+		fwrite($file,'strSql= '. $msg ."\n");
+		*/
+		$this->lg->log($msg);
+		
 	}
 
 }

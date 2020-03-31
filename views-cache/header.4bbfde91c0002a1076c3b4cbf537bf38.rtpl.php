@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php if(!class_exists('Rain\Tpl')){exit;}?><!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
@@ -176,7 +176,17 @@ desired effect
               <!-- The user image in the navbar-->
               <img src="../../res/admin/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs">Alexander Pierce</span>
+              <!-- <span class="hidden-xs">Alexander Pierce</span> -->
+              <span class="hidden-xs">
+                &lt;?php  
+                  if (!isset($_SESSION[User::SESSION]) {
+                    echo "".$_SESSION[User::SESSION]["desperson"];
+                  } else {
+                    echo "nao logado";
+                  }
+                ?&gt;
+              </span>
+              
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->

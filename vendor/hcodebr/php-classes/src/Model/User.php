@@ -89,7 +89,7 @@ class User extends Model{
         $sql = new Sql();
         $strSql = "CALL sp_users_delete(:IDUSER)";
 
-        $sql->select($strSql, array(":IDUSER"=>$iduser), true);
+        $sql->query($strSql, array(":IDUSER"=>$iduser), true);
 
     }
 

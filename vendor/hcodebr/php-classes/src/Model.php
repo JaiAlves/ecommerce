@@ -35,12 +35,12 @@ class Model {
 	}
 
 	public function setData($data){
-		$lg =new  Lg();
-		$lg->log('setData');
+		//$lg =new  Lg();
+		//$lg->log('setData');
 
-		$lg->log('foreach em data:');
+		
 		foreach ($data as $key => $value){
-			$lg->log(''.$key.'='.$value);
+			//$lg->log(''.$key.'='.$value);
 			$this->{"set".$key}($value);
 		}
 	}

@@ -176,17 +176,7 @@ desired effect
               <!-- The user image in the navbar-->
               <img src="../../res/admin/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <!-- <span class="hidden-xs">Alexander Pierce</span> -->
-              <span class="hidden-xs">
-                &lt;?php  
-                  if (!isset($_SESSION[User::SESSION]) {
-                    echo "".$_SESSION[User::SESSION]["desperson"];
-                  } else {
-                    echo "nao logado";
-                  }
-                ?&gt;
-              </span>
-              
+              <span class="hidden-xs">Alexander Pierce</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->

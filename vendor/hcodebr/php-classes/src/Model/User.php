@@ -4,13 +4,14 @@ namespace Hcode\Model;
 use \Hcode\DB\Sql;
 use Hcode\Model;
 use \Hcode\Util\Lg;
+use \Hcode\Mailer;
 
 date_default_timezone_set("America/Sao_Paulo");
 setlocale(LC_ALL, 'pt_BR');
 
 
 class User extends Model{
-    const SESSION = "User";
+    
 
     public static function login($login, $password) {
         $db = new Sql();
@@ -58,7 +59,7 @@ class User extends Model{
         $sql = new Sql();
         $strSql ="SELECT * FROM tb_users a INNER JOIN tb_persons b  USING(idperson) WHERE a.iduser =:IDUSER ORDER BY b.desperson ";
 
-        $results = $sql->select($strSql, array(":IDUSER"=>$iduser), true);
+        $results = $sql->select($strSql, array(":IDUSER"=>$iduser));
 
 		if (count($results) === 0) {
 			throw new \Exception("Usuário nao encontrado.");
@@ -89,7 +90,7 @@ class User extends Model{
         $sql = new Sql();
         $strSql = "CALL sp_users_delete(:IDUSER)";
 
-        $sql->query($strSql, array(":IDUSER"=>$iduser), true);
+        $sql->query($strSql, array(":IDUSER"=>$iduser));
 
     }
 
@@ -106,7 +107,7 @@ class User extends Model{
                         ":nrphone"      =>$this->getnrphone(), 
                         ":inadmin"      =>$this->getinadmin());        
 
-        $results = $sql->select($strSql, $array, true);
+        $results = $sql->select($strSql, $array);
 
         $this->setData($results[0]);        
     }
@@ -122,9 +123,108 @@ class User extends Model{
                         ":nrphone"      =>$this->getnrphone(), 
                         ":inadmin"      =>$this->getinadmin());        
 
-        $results = $sql->select($strSql, $array, true);
+        $results = $sql->select($strSql, $array);
 
         $this->setData($results[0]);
+    }
+
+    public static function getForgot($email) {
+        $msgException = "Não foi possível recuperar a senha.";
+
+        $sql = new Sql();
+        $strSql ="SELECT * FROM tb_users a INNER JOIN tb_persons b  USING(idperson) WHERE b.desemail = :email";
+
+        $results = $sql->select($strSql, array(":email"=>$email));
+
+        //if (count($results===0)) {
+        if(!isset($results) || count($results)===0 ){   
+            throw new \Exception($msgException);
+        }
+
+        $data = $results[0];
+        $desip=$_SERVER["REMOTE_ADDR"];
+
+        $strSql = "CALL sp_userspasswordsrecoveries_create(:iduser, :desip)";
+
+        $results2 = $sql->select($strSql, array(":iduser"=>$data["iduser"], ":desip"=>$desip));
+
+        //if (count($results2===0)) {
+        if(!isset($results2)) {
+            throw new \Exception($msgException);
+        }
+
+        $dataRecovery = $results2[0];
+
+        //$code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SECRET, $dataRecovery["idrecovery"],  MCRYPT_MODEL_ECB));
+        //funcao mcrypt_encrypt foi descontinuada na versao 7.2 do php, entao usamos a openssl....
+
+        $code = base64_encode(openssl_encrypt($dataRecovery["idrecovery"],User::ALGORITIMO, User::SECRET, OPENSSL_RAW_DATA, User::IV));
+
+        $link = "http://www.localhost.ecommerce.com.br/admin/forgot/reset?code=".$code;
+
+        $mailer = new Mailer($data["desemail"], $data["desperson"], "Recuperação de senha do ecommerce!", "forgot", 
+            array(
+                "name"=>$data["desperson"],
+                "link"=>$link
+            )
+        );
+
+
+        $mailer->send();
+
+        return $data;
+
+    }
+
+    public static function validForgotDecrypt($code) {
+        //$lg = new Lg();
+        //$lg->log("Linha 185... cod = ".$code);
+
+
+        $msgException = "Não foi possível recuperar a senha.";
+        $sql = new Sql();
+
+        $idrecovery = openssl_decrypt(base64_decode($code),User::ALGORITIMO, User::SECRET, OPENSSL_RAW_DATA, User::IV);
+
+        if(!isset($idrecovery)){
+            throw new \Exception("Erro ao obter recovery");
+        }
+
+
+        $strSql ="SELECT * FROM tb_userspasswordsrecoveries a
+                           INNER JOIN tb_users b USING(iduser)
+                           INNER JOIN tb_persons c USING(idperson)
+                    WHERE a.idrecovery= :idrecovery 
+                    AND a.dtrecovery is null 
+                    AND DATE_ADD(a.dtregister, INTERVAL 1 HOUR)>=NOW()";
+
+        $results = $sql->select($strSql, array(":idrecovery"=>$idrecovery));
+
+
+        if(!isset($results) || count($results)===0){   
+            throw new \Exception($msgException);
+        }
+
+        return $results[0];
+
+    }
+
+    public static function closeRecovery($idrecovery) {
+        $sql = new Sql();
+
+        $strSql ="UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE idrecovery=:idrecovery";
+        $sql->query($strSql, array(":idrecovery"=>$idrecovery));
+
+    }
+
+    public static function updatePassword($iduser, $password ) {
+        $msgException = "Não foi possível atualizar a senha.";
+        $sql = new Sql();
+
+
+        $strSql ="UPDATE tb_users SET despassword=:despassword WHERE iduser= :iduser";
+        $sql->query($strSql, array(":despassword"=>$password,":iduser"=>$iduser));
+
     }
 
 }

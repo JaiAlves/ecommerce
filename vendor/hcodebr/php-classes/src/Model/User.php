@@ -6,11 +6,11 @@ use Hcode\Model;
 use \Hcode\Util\Lg;
 use \Hcode\Mailer;
 
-date_default_timezone_set("America/Sao_Paulo");
-setlocale(LC_ALL, 'pt_BR');
-
-
 class User extends Model{
+    const SESSION = "User";
+    const SECRET = "@12345$7890*2345";
+    const ALGORITIMO = "AES-256-CBC";
+    const IV = "wNYtCnelXfOa6uiJ";
     
 
     public static function login($login, $password) {
@@ -38,6 +38,7 @@ class User extends Model{
             throw new \Exception("Usuario inexistente ou senha inválida.", 1);
         }
     }
+
 
 	public static function logout(){
 		$_SESSION[User::SESSION] = NULL;

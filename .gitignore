@@ -2,3 +2,4 @@ log/
 vendor/phpmailer/
 vendor/rain/
 vendor/slim/
+views-cache/

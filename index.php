@@ -7,6 +7,8 @@ use \Slim\Slim;
 use \Hcode\Page;
 use \Hcode\PageAdmin;
 use \Hcode\Model\User;
+use \Hcode\Model\Category;
+use \Hcode\Util\Lg;
 
 $app = new Slim();
 
@@ -23,8 +25,18 @@ $app->get('/', function() {
 $app->get('/admin', function() {
     User::verifyLogin();
     
+    $user = new User();
+
+    $iduser = (int) $_SESSION[User::SESSION]["iduser"];
+
+    $lg = new Lg();
+    $lg->log("[rota admin] iduser =".$iduser);
+
+    $user->_get((int) $iduser);
+
 	$page = new PageAdmin();
 
+    //$page->setTpl("index");
     $page->setTpl("index");
 
 });
@@ -209,6 +221,104 @@ $app->post('/admin/forgot/reset', function() {
     $page->setTpl("forgot-reset-success", array("user"=>$user->getValues()));                                  
 
 });
+
+//rota para template categorias
+$app->get('/admin/categories', function() {
+    $categories = Category::listAll();
+
+	$page = new PageAdmin();
+
+
+    //$page->setTpl("categories",['categories'=>$categories] );        
+    $page->setTpl("categories",array("categories"=>$categories) );        
+});
+
+$app->get('/admin/categories/create', function() {
+    User::verifyLogin();
+    
+    $page = new PageAdmin();
+
+    $page->setTpl("categories-create");
+});
+
+
+$app->post('/admin/categories/create', function() {
+    User::verifyLogin();
+    
+    $category =  new Category();
+
+    $category->setData($_POST);
+
+    $category->save();
+    
+    header("Location: /admin/categories");
+    exit;
+});
+
+$app->get('/admin/categories/:idcategory', function($idcategory) {
+    User::verifyLogin();
+
+    $category = new Category();
+
+    $category->_get($idcategory);
+    
+    $page = new PageAdmin();
+
+    $page->setTpl("categories-update",array(
+        "category"=>$category->getValues()
+    ));
+});
+
+$app->post('/admin/categories/:idcategory', function($idcategory) {
+    User::verifyLogin();
+    
+    $category = new Category();
+
+    $category->_get((int) $idcategory);
+
+    $category->setData($_POST);
+
+    $category->update();
+
+    header("Location: /admin/categories");
+    exit;
+});
+
+$app->get('/admin/categories/:idcategory/delete', function($idcategory) {
+    User::verifyLogin();
+    
+    $category = new Category();
+
+    $category->delete((int) $idcategory);
+
+    header("Location: /admin/categories");
+    exit;
+
+});
+
+//rota qdo eh clicando numa categoria do meno no footer
+$app->get('/categories/:idcategory', function($idcategory) {
+    $category = new Category();
+
+    $category->_get((int) $idcategory);
+
+    $page = new Page();
+
+    $page->setTpl("category", 
+                 ['category'=>$category->getValues(),
+                  'products'=>[]
+    ]);
+
+    /*
+    $category->setData($_POST);
+
+    $category->update();
+
+    header("Location: /admin/categories");
+    exit;
+    */
+});
+
 
 $app->run();
 

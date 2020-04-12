@@ -3,6 +3,7 @@
 namespace Hcode;
 
 use Rain\Tpl;
+use \Hcode\Util\Variaveis;
 
 class Page {
 
@@ -15,12 +16,14 @@ class Page {
     ];
 
     public function __construct($opts = array(), $tpl_dir = "/views/") {
-
+        $path_app=Variaveis::_getPathApp();
         $this->options = array_merge($this->deafaults, $opts);
 
         $config = array(
-            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir,
-            "cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",
+            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$path_app.$tpl_dir,
+            "cache_dir"     => $_SERVER["DOCUMENT_ROOT"].$path_app."/views-cache/",
+            //"tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir,
+            //"cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",
             "debug"         => false
            );
         

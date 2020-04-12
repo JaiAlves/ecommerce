@@ -9,6 +9,7 @@ use \Hcode\PageAdmin;
 use \Hcode\Model\User;
 use \Hcode\Model\Category;
 use \Hcode\Util\Lg;
+use \Hcode\Util\Variaveis;
 
 $app = new Slim();
 
@@ -65,7 +66,7 @@ $app->post('/admin/login', function() {
 $app->get('/admin/logout', function() {
     User::logout();
     
-    header("Location: /admin/login");
+    header("Location: ".Variaveis::_getPathApp."/admin/login");
     exit;
 
 });
@@ -116,7 +117,7 @@ $app->post('/admin/users/create', function() {
 
     $user->save();
     
-    header("Location: /admin/users");
+    header("Location: ".Variaveis::path_app."/admin/users");
     exit;
 });
 
@@ -127,7 +128,7 @@ $app->get('/admin/users/:iduser/delete', function($iduser) {
 
     $user->delete((int) $iduser);
 
-    header("Location: /admin/users");
+    header("Location: ".Variaveis::_getPathApp."/admin/users");
     exit;
 
 });
@@ -145,7 +146,7 @@ $app->post('/admin/users/:iduser', function($iduser) {
 
     $user->update();
 
-    header("Location: /admin/users");
+    header("Location: ".Variaveis::_getPathApp."/admin/users");
     exit;
 
 });
@@ -166,7 +167,7 @@ $app->get('/admin/forgot', function() {
 $app->post('/admin/forgot', function() {
     $user = User::getForgot($_POST["email"]);
 
-    header("Location: /admin/forgot/sent");
+    header("Location: ".Variaveis::_getPathApp."/admin/forgot/sent");
     exit;
 
 });
@@ -251,7 +252,7 @@ $app->post('/admin/categories/create', function() {
 
     $category->save();
     
-    header("Location: /admin/categories");
+    header("Location: ".Variaveis::path_app."/admin/categories");
     exit;
 });
 
@@ -280,7 +281,7 @@ $app->post('/admin/categories/:idcategory', function($idcategory) {
 
     $category->update();
 
-    header("Location: /admin/categories");
+    header("Location: ".Variaveis::_getPathApp."/admin/categories");
     exit;
 });
 
@@ -291,7 +292,7 @@ $app->get('/admin/categories/:idcategory/delete', function($idcategory) {
 
     $category->delete((int) $idcategory);
 
-    header("Location: /admin/categories");
+    header("Location: ".Variaveis::_getPathApp."/admin/categories");
     exit;
 
 });

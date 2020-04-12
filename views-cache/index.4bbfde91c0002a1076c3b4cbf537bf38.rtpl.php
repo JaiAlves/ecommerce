@@ -3,8 +3,10 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Page Header
-        <small>Optional description</small>
+        <a href="/admin/categories"><i class="fa fa-link"></i> <span>Categorias</span></a>
+        <br>
+        <br>
+        <a href="/admin/users"><i class="fa fa-users"></i> <span>Usuários</span></a>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>

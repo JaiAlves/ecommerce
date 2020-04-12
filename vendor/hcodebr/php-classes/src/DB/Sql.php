@@ -7,7 +7,7 @@ use Hcode\Util\Lg;
 class Sql {
 
 	const HOSTNAME = "127.0.0.1";
-	const USERNAME = "root";
+	const USERNAME = "";
 	const PASSWORD = "";
 	const DBNAME = "db_ecommerce";
 

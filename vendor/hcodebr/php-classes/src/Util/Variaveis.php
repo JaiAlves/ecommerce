@@ -9,6 +9,10 @@ class Variaveis {
         return "";//"/ecommerce";
     }
 
+    public static function _getLink() {
+        return "http://www.localhost.ecommerce.com.br".Variaveis::_getPathApp();
+    }
+
 }
 
 

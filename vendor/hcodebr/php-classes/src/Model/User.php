@@ -5,6 +5,7 @@ use \Hcode\DB\Sql;
 use Hcode\Model;
 use \Hcode\Util\Lg;
 use \Hcode\Mailer;
+use \Hcode\Util\Variaveis;
 
 class User extends Model{
     const SESSION = "User";
@@ -51,7 +52,7 @@ class User extends Model{
             (bool) $_SESSION[User::SESSION]["inadmin"]!== $inadmin) { //se o user da sessao nao for admin
 
             //Entao redireciona para pagina de login
-            header("Location: /admin/login");
+            header("Location: ".Variaveis::_getPathApp()."/admin/login");
             exit;
         }
     }
@@ -81,7 +82,7 @@ class User extends Model{
         if ((int) $_SESSION[User::SESSION]["iduser"]===$iduser) {
             echo "<script>
             alert('Nao é permitido excluir o usuario logado.');
-            window.location.href = '/admin/users';
+            window.location.href = ".Variaveis::_getPathApp()."'/admin/users';
           </script>";
           exit;
       
@@ -161,7 +162,7 @@ class User extends Model{
 
         $code = base64_encode(openssl_encrypt($dataRecovery["idrecovery"],User::ALGORITIMO, User::SECRET, OPENSSL_RAW_DATA, User::IV));
 
-        $link = "http://www.localhost.ecommerce.com.br/admin/forgot/reset?code=".$code;
+        $link = Variaveis::_getLink()."/admin/forgot/reset?code=".$code;
 
         $mailer = new Mailer($data["desemail"], $data["desperson"], "Recuperação de senha do ecommerce!", "forgot", 
             array(

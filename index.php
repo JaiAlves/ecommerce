@@ -57,7 +57,7 @@ $app->post('/admin/login', function() {
     
     User::login($_POST["login"], $_POST["password"]);
 
-    header("Location: /admin");
+    header("Location: ".Variaveis::_getPathApp()."/admin");
     exit;
 
 });
@@ -84,7 +84,10 @@ $app->get('/admin/users', function() {
 $app->get('/admin/users/create', function() {
     User::verifyLogin();
     
-    $page = new PageAdmin();
+    $page = new PageAdmin([
+        "header"=>true,
+        "footer"=>true
+    ], "/views/admin/", "header-entity", "footer-entity");
 
     $page->setTpl("users-create");
 });
@@ -96,7 +99,10 @@ $app->get('/admin/users/:iduser', function($iduser) {
 
     $user->_get((int) $iduser);
     
-    $page = new PageAdmin();
+    $page = new PageAdmin([
+        "header"=>true,
+        "footer"=>true
+    ], "/views/admin/", "header-entity", "footer-entity");
 
     $page->setTpl("users-update", array(
         "user"=>$user->getValues()
@@ -117,7 +123,7 @@ $app->post('/admin/users/create', function() {
 
     $user->save();
     
-    header("Location: ".Variaveis::path_app."/admin/users");
+    header("Location: ".Variaveis::_getPathApp()."/admin/users");
     exit;
 });
 
@@ -237,7 +243,10 @@ $app->get('/admin/categories', function() {
 $app->get('/admin/categories/create', function() {
     User::verifyLogin();
     
-    $page = new PageAdmin();
+    $page = new PageAdmin([
+        "header"=>true,
+        "footer"=>true
+    ], "/views/admin/", "header-entity", "footer-entity");
 
     $page->setTpl("categories-create");
 });
@@ -252,7 +261,7 @@ $app->post('/admin/categories/create', function() {
 
     $category->save();
     
-    header("Location: ".Variaveis::path_app."/admin/categories");
+    header("Location: ".Variaveis::_getPathApp()."/admin/categories");
     exit;
 });
 
@@ -263,7 +272,10 @@ $app->get('/admin/categories/:idcategory', function($idcategory) {
 
     $category->_get($idcategory);
     
-    $page = new PageAdmin();
+    $page = new PageAdmin([
+        "header"=>true,
+        "footer"=>true
+    ], "/views/admin/", "header-entity", "footer-entity");
 
     $page->setTpl("categories-update",array(
         "category"=>$category->getValues()

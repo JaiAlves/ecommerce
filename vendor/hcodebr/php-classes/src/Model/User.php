@@ -163,7 +163,6 @@ class User extends Model{
         $code = base64_encode(openssl_encrypt($dataRecovery["idrecovery"],User::ALGORITIMO, User::SECRET, OPENSSL_RAW_DATA, User::IV));
 
         $link = Variaveis::_getLink()."/admin/forgot/reset?code=".$code;
-
         $mailer = new Mailer($data["desemail"], $data["desperson"], "Recuperação de senha do ecommerce!", "forgot", 
             array(
                 "name"=>$data["desperson"],
@@ -172,7 +171,8 @@ class User extends Model{
         );
 
 
-        $mailer->send();
+        $email_enviado = $mailer->send();
+        echo 'email_enviado = '.$email_enviado;
 
         return $data;
 

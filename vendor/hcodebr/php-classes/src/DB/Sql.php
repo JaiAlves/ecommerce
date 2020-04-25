@@ -7,8 +7,8 @@ use Hcode\Util\Lg;
 class Sql {
 
 	const HOSTNAME = "127.0.0.1";
-	const USERNAME = "";
-	const PASSWORD = "";
+	const USERNAME = "root";
+	const PASSWORD = "Senhanova1@";
 	const DBNAME = "db_ecommerce";
 
 	private $conn;

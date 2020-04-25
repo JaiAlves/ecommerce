@@ -7,6 +7,7 @@ use \Hcode\Util\Variaveis;
 
 class Page {
 
+    private $footer;
     private $tpl;
     private $options =[];
     private $deafaults = [
@@ -15,15 +16,14 @@ class Page {
         "data"=>[]
     ];
 
-    public function __construct($opts = array(), $tpl_dir = "/views/") {
+    public function __construct($opts = array(), $tpl_dir = "/views/", $header="header", $footer="footer") {
         $path_app=Variaveis::_getPathApp();
         $this->options = array_merge($this->deafaults, $opts);
+        $this->footer=$footer;
 
         $config = array(
             "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$path_app.$tpl_dir,
             "cache_dir"     => $_SERVER["DOCUMENT_ROOT"].$path_app."/views-cache/",
-            //"tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir,
-            //"cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",
             "debug"         => false
            );
         
@@ -34,7 +34,7 @@ class Page {
         $this->setData($this->options["data"]);
 
         if ($this->options["header"]) {
-            $this->tpl->draw("header");
+            $this->tpl->draw($header);
         }
         
 
@@ -57,7 +57,7 @@ class Page {
 
     public function __destruct() {
         if ($this->options["footer"]) {
-            $this->tpl->draw("footer");
+            $this->tpl->draw($this->footer);
         }
     }
 

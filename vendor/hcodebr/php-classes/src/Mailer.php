@@ -5,6 +5,8 @@ namespace Hcode;
 use Rain\Tpl;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
+use \Hcode\Util\Variaveis;
+use \Hcode\Util\Lg;
 
 require_once("email/vendor/autoload.php");
 
@@ -18,12 +20,13 @@ class Mailer {
     const NAME_FROM = 'Ecommerce Store';
 
     private $mail;
+    private $smtpLogs = [];
 
     public function __construct($toAddress, $toName, $subject, $tplName, $data= array()) {
-
+        $path_app=Variaveis::_getPathApp();
         $config = array(
-            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"]."/views/email/",
-            "cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",
+            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$path_app."/views/email/",
+            "cache_dir"     => $_SERVER["DOCUMENT_ROOT"].$path_app."/views-cache/",
             "debug"         => false
            );
         
@@ -38,7 +41,7 @@ class Mailer {
         $html = $tpl->draw($tplName, true);
 
         //Create a new PHPMailer instance
-        $this->mail = new \PHPMailer;
+        $this->mail = new PHPMailer;
 
         //Tell PHPMailer to use SMTP
         $this->mail->isSMTP();
@@ -47,7 +50,8 @@ class Mailer {
         // SMTP::DEBUG_OFF = off (for production use)
         // SMTP::DEBUG_CLIENT = client messages
         // SMTP::DEBUG_SERVER = client and server messages
-        $this->mail->SMTPDebug =0; //SMTP::DEBUG_SERVER;
+        //$this->mail->SMTPDebug =0; //SMTP::DEBUG_SERVER;
+        $this->mail->SMTPDebug = 2;
 
         //Set the hostname of the mail server
         $this->mail->Host = 'smtp.gmail.com';
@@ -95,8 +99,19 @@ class Mailer {
     }
 
     public function send() {
+        $lg = new Lg();
 
-        return $this->mail->send();
+        $lg->log("Email, ErrorInfo: ".$this->mail->ErrorInfo);
+
+        $return = $this->mail->send();
+
+        // After the send
+        //print_r($this->mail->ErrorInfo);
+        //printLogs($this->smtpLogs);
+
+
+        return $return;
+
 
         /*
         //send the message, check for errors
@@ -116,7 +131,6 @@ class Mailer {
         }        
         */
     }
-
 
 }
 

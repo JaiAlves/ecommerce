@@ -74,7 +74,7 @@ class Category extends Model {
         $html =[];
 
         foreach($categories as $row) {
-            array_push($html, '<li><a href="/categories/'.$row['idcategory'] . '">'.$row['descategory'] .'</a></li>');
+            array_push($html, '<li><a href="'.Variaveis::_getPathApp(). '/categories/'.$row['idcategory'] . '">'.$row['descategory'] .'</a></li>');
         }
 
         file_put_contents($_SERVER['DOCUMENT_ROOT'].Variaveis::_getPathApp().DIRECTORY_SEPARATOR ."views".DIRECTORY_SEPARATOR. "categories-menu.html", 

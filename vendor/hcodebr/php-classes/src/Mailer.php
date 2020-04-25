@@ -100,10 +100,16 @@ class Mailer {
 
     public function send() {
         $lg = new Lg();
-
-        $lg->log("Email, ErrorInfo: ".$this->mail->ErrorInfo);
+        $lg->log("Mailer.send, ");
 
         $return = $this->mail->send();
+
+        if (!isset($this->mail->ErrorInfo)) {
+            $lg->log("Email, ErrorInfo: ".$this->mail->ErrorInfo);
+        }  else {
+            $lg->log("Email enviado com sucesso! , return: ".$return);
+        }
+
 
         // After the send
         //print_r($this->mail->ErrorInfo);

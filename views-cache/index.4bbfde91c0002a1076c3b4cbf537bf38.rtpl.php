@@ -7,6 +7,9 @@
         <br>
         <br>
         <a href="/admin/users"><i class="fa fa-users"></i> <span>Usuários</span></a>
+        <br>
+        <br>
+        <a href="/admin/products"><i class="fa fa-link"></i> <span>Produtos</span></a>        
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>

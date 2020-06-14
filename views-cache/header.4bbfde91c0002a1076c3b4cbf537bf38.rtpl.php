@@ -58,11 +58,11 @@ desired effect
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="/admin/index.html" class="logo">
+    <a href="/admin" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>A</b>LT</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>LTE</span>
+      <span class="logo-lg"><b>Administracao</b></span>
     </a>
 
     <!-- Header Navbar -->
@@ -258,6 +258,7 @@ desired effect
         <!-- Optionally, you can add icons to the links -->
         <li class="active"><a href="/admin/categories"><i class="fa fa-link"></i> <span>Categorias</span></a></li>
         <li class="active"><a href="/admin/users"><i class="fa fa-users"></i> <span>Usuários</span></a></li>
+        <li class="active"><a href="/admin/products"><i class="fa fa-link"></i> <span>Produtos</span></a></li>
         <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>

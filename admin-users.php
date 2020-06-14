@@ -48,7 +48,7 @@ $app->get('/admin/users/:iduser', function($iduser) {
         $page = new PageAdmin([
             "header"=>true,
             "footer"=>true
-        ], "/views/admin/", "header_site", "footer_site");
+        ], "/views/admin/", "header-entity", "footer-entity");
     }
 
     $page->setTpl("users-update", array(

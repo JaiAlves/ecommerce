@@ -73,8 +73,8 @@ class Product extends Model {
     }
 
     private function getPathImg() {
-        return     "". $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 
-                    Variaveis::_getPathApp() .
+        return     "". $_SERVER['DOCUMENT_ROOT'] . 
+                    Variaveis::_getPathApp() .DIRECTORY_SEPARATOR .
                     "res" . DIRECTORY_SEPARATOR . 
                     "site" . DIRECTORY_SEPARATOR . 
                     "img" . DIRECTORY_SEPARATOR .
@@ -82,10 +82,10 @@ class Product extends Model {
     }
 
     private function checkPhoto() {
-        $url =  "/res/site/img/" .  "product.jpg";
+        $url =  Variaveis::_getPathApp()."/res/site/img/" .  "product.jpg";
    
         if (file_exists($this->getPathImg() . $this->getidproduct() . ".jpg")) {
-                $url =  "/res/site/img/products/" . $this->getidproduct() . ".jpg";
+                $url =  Variaveis::_getPathApp()."/res/site/img/products/" . $this->getidproduct() . ".jpg";
             }
     
            return $this->setdesphoto($url);

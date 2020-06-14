@@ -17,10 +17,17 @@ $app->get('/admin/users', function() {
 $app->get('/admin/users/create', function() {
     User::verifyLogin();
     
-    $page = new PageAdmin([
-        "header"=>true,
-        "footer"=>true
-    ], "/views/admin/", "header", "footer");
+    if (Variaveis::_getPathApp()=="") {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header", "footer");
+    } else {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header_site", "footer_site");
+    }
 
     $page->setTpl("users-create");
 });
@@ -32,10 +39,17 @@ $app->get('/admin/users/:iduser', function($iduser) {
 
     $user->_get((int) $iduser);
     
-    $page = new PageAdmin([
-        "header"=>true,
-        "footer"=>true
-    ], "/views/admin/", "header", "footer");
+    if (Variaveis::_getPathApp()=="") {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header", "footer");
+    } else {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header_site", "footer_site");
+    }
 
     $page->setTpl("users-update", array(
         "user"=>$user->getValues()

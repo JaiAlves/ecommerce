@@ -43,7 +43,19 @@ class User extends Model{
 
 	public static function logout(){
 		$_SESSION[User::SESSION] = NULL;
-	}    
+    }    
+    
+    public static function usuLogado() {
+        if (isset($_SESSION[User::SESSION]) && (int) $_SESSION[User::SESSION]["iduser"] > 0) {
+            $user = new User();
+            
+            $user->_get((int) $_SESSION[User::SESSION]["iduser"]);
+
+            return $user;
+        }
+
+        return null;
+    }
 
     public static function verifyLogin($inadmin = true) {
         if (!isset($_SESSION[User::SESSION]) || //se a sessao nao foi definida

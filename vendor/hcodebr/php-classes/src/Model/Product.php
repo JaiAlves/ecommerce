@@ -14,6 +14,16 @@ class Product extends Model {
         return $sql->select($strSql);
     }    
 
+    public static function checkList($list) {
+        foreach ($list as &$row) { //o fato de colocar & faz com que possa utilizar a variavel por referencia dentro do looping
+            $p = new Product();
+            $p->setData($row);
+            $row = $p->getValues();
+        }
+
+        return $list; //como utilizamos & na var row que veio de dentro da lista, entao qdo fizemos a alteracao na row automaticamente alteramos o conteudo da list
+    }
+
     public function save() {
         $idproduct=0;
         if ($this->getidproduct()!=null) {

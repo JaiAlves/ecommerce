@@ -26,7 +26,7 @@ $app->get('/admin/users/create', function() {
         $page = new PageAdmin([
             "header"=>true,
             "footer"=>true
-        ], "/views/admin/", "header_site", "footer_site");
+        ], "/views/admin/", "header-entity", "footer-entity");
     }
 
     $page->setTpl("users-create");

@@ -19,10 +19,17 @@ $app->get('/admin/categories', function() {
 $app->get('/admin/categories/create', function() {
     User::verifyLogin();
     
-    $page = new PageAdmin([
-        "header"=>true,
-        "footer"=>true
-    ], "/views/admin/", "header-entity", "footer-entity");
+    if (Variaveis::_getPathApp()=="") {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header", "footer");
+    } else {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header-entity", "footer-entity");
+    }
 
     $page->setTpl("categories-create");
 });
@@ -48,10 +55,17 @@ $app->get('/admin/categories/:idcategory', function($idcategory) {
 
     $category->_get($idcategory);
     
-    $page = new PageAdmin([
-        "header"=>true,
-        "footer"=>true
-    ], "/views/admin/", "header-entity", "footer-entity");
+    if (Variaveis::_getPathApp()=="") {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header", "footer");
+    } else {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header-entity", "footer-entity");
+    }
 
     $page->setTpl("categories-update",array(
         "category"=>$category->getValues()

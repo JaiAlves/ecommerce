@@ -18,10 +18,17 @@ $app->get('/admin/products', function() {
 $app->get('/admin/products/create', function() {
     User::verifyLogin();
 
-    $page = new PageAdmin([
-        "header"=>true,
-        "footer"=>true
-    ], "/views/admin/", "header", "footer");
+    if (Variaveis::_getPathApp()=="") {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header", "footer");
+    } else {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header-entity", "footer-entity");
+    }
 
     $page->setTpl("products-create");    
 });
@@ -58,11 +65,18 @@ $app->get('/admin/products/:idproduct', function($idproduct) {
     $product = new Product();
 
     $product->_get((int) $idproduct);
-    
-    $page = new PageAdmin([
-        "header"=>true,
-        "footer"=>true
-    ], "/views/admin/", "header", "footer");
+
+    if (Variaveis::_getPathApp()=="") {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header", "footer");
+    } else {
+        $page = new PageAdmin([
+            "header"=>true,
+            "footer"=>true
+        ], "/views/admin/", "header-entity", "footer-entity");
+    }    
 
     $page->setTpl("products-update", array(
         "product"=>$product->getValues()

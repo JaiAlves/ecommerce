@@ -96,15 +96,27 @@ class Category extends Model {
 
         return $sql->select("select * from tb_products where idproduct not in (
                             select a.idproduct from tb_products a 
-                            inner join tb_productscategories b on a.idproduct = b.idproduct
-                            where b.idcategory = :idcategory
-                     )", 
-        [
-            ':idcategory'=>$this->getidcategory()
-        ]);
-
-
+                            inner join tb_productscategories b on a.idproduct = b.idproduct)");
     }
+
+    public function addProduct($idproduct){
+        $sql = new Sql();
+
+        $strSql = "INSERT INTO tb_productscategories (idcategory, idproduct) VALUES (:idcategory, :idproduct)";
+        $parametros =[':idcategory'=>$this->getidcategory(), ':idproduct'=>$idproduct];
+
+        $sql->query($strSql, $parametros);
+    }
+
+    public function removeProduct($idproduct){
+        $sql = new Sql();
+
+        $strSql ="DELETE FROM tb_productscategories WHERE idcategory = :idcategory AND idproduct = :idproduct";
+        $parametros =[':idcategory'=>$this->getidcategory(), ':idproduct'=>$idproduct];
+
+        $result = $sql->query($strSql,$parametros);
+
+    }    
 }
 
 ?>

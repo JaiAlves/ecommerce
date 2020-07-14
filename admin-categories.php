@@ -120,4 +120,32 @@ $app->get("/admin/categories/:idcategory/products", function($idcategory){
     ]);
 });
 
+
+$app->get('/admin/categories/:idcategory/products/:idproduct/add', function($idcategory, $idproduct) {
+    User::verifyLogin();
+    
+    $category = new Category();
+
+    $category->_get((int) $idcategory);
+
+    $category->addProduct($idproduct);
+
+    header("Location: ".Variaveis::_getPathApp()."/admin/categories/" .$idcategory. "/products");
+    exit;
+});
+
+
+$app->get('/admin/categories/:idcategory/products/:idproduct/remove', function($idcategory, $idproduct) {
+    User::verifyLogin();
+    
+    $category = new Category();
+
+    $category->_get((int) $idcategory);
+
+    $category->removeProduct($idproduct);
+
+    header("Location: ".Variaveis::_getPathApp()."/admin/categories/" .$idcategory. "/products");
+    exit;
+});
+
 ?>

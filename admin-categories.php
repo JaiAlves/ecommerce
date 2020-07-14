@@ -99,27 +99,25 @@ $app->get('/admin/categories/:idcategory/delete', function($idcategory) {
 
 });
 
-//rota qdo eh clicando numa categoria do meno no footer
-$app->get('/categories/:idcategory', function($idcategory) {
+
+$app->get("/admin/categories/:idcategory/products", function($idcategory){
+    User::verifyLogin();
+
     $category = new Category();
 
     $category->_get((int) $idcategory);
 
-    $page = new Page();
+    $page = new PageAdmin([
+        "header"=>true,
+        "footer"=>true
+    ], "/views/admin/", "header-entity2", "footer-entity2");
+   
 
-    $page->setTpl("category", 
+    $page->setTpl("categories-products", 
                  ['category'=>$category->getValues(),
-                  'products'=>[]
+                  'productsRelated'=>$category->getProducts(),
+                  'productsNotRelated'=>$category->getProducts(false)
     ]);
-
-    /*
-    $category->setData($_POST);
-
-    $category->update();
-
-    header("Location: /admin/categories");
-    exit;
-    */
 });
 
 ?>

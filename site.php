@@ -12,4 +12,28 @@ $app->get('/', function() {
     ]);
 });
 
+//rota qdo eh clicando numa categoria do meno no footer
+$app->get('/categories/:idcategory', function($idcategory) {
+
+    $category = new Category();
+
+    $category->_get((int) $idcategory);
+
+    $page = new Page();
+
+    $page->setTpl("category", 
+                 ['category'=>$category->getValues(),
+                  'products'=>[]
+    ]);
+
+    /*
+    $category->setData($_POST);
+
+    $category->update();
+
+    header("Location: /admin/categories");
+    exit;
+    */
+});
+
 ?>

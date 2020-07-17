@@ -16,25 +16,34 @@ $app->get('/', function() {
 //rota qdo eh clicando numa categoria do meno no footer
 $app->get('/categories/:idcategory', function($idcategory) {
 
+    $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+
     $category = new Category();
 
     $category->_get((int) $idcategory);
+
+    $pagination = $category->getProductsPage($page);
+
+    $products =$pagination['data'];
+    $total_pages = $pagination['pages'];
+   
+    $pages = [];
+
+    for ($i=1; $i<=$total_pages ;$i++) {
+        array_push($pages, [
+            'link'=>'/categories/'.$category->getidcategory(). '?page='.$i,
+            'page'=>$i
+        ]);
+    }
 
     $page = new Page();
 
     $page->setTpl("category", 
                  ['category'=>$category->getValues(),
-                  'products'=>Product::checkList($category->getProducts())
+                  'products'=>$products,
+                  'pages'=>$pages
     ]);
 
-    /*
-    $category->setData($_POST);
-
-    $category->update();
-
-    header("Location: /admin/categories");
-    exit;
-    */
 });
 
 ?>

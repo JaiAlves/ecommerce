@@ -31,9 +31,9 @@ class Category extends Model {
     
     public function _get($idcategory) {
         $sql = new Sql();
-        $strSql ="SELECT * FROM db_ecommerce.tb_categories WHERE idcategory= :idecategory";
+        $strSql ="SELECT * FROM db_ecommerce.tb_categories WHERE idcategory= :idcategory";
 
-        $results = $sql->select($strSql, array(":idecategory"=>$idcategory));
+        $results = $sql->select($strSql, array(":idcategory"=>$idcategory));
 
 		if (count($results) === 0) {
 			throw new \Exception("Categoria nao encontrada.");
@@ -97,6 +97,33 @@ class Category extends Model {
         return $sql->select("select * from tb_products where idproduct not in (
                             select a.idproduct from tb_products a 
                             inner join tb_productscategories b on a.idproduct = b.idproduct)");
+    }
+
+    public function getProductsPage($page =1, $itemsPerPage=3){
+        $start = ($page -1) * $itemsPerPage;
+
+        $sql = new Sql();
+
+        $strSql = "
+            select sql_calc_found_rows * 
+            FROM tb_products a
+            INNER join tb_productscategories b on a.idproduct = b.idproduct
+            INNER join tb_categories c on b.idcategory = c.idcategory
+            WHERE c.idcategory =".$this->getidcategory()."
+            LIMIT ".$start.",". $itemsPerPage;
+
+        $results = $sql->select($strSql);
+
+        $resultTotal = $sql->select("select FOUND_ROWS() as nrtotal;");
+
+        $total = (int) $resultTotal[0]["nrtotal"];
+
+        return [
+            'data'=>Product::checkList($results),
+            'total'=>$total,
+            'pages'=>ceil($total / $itemsPerPage)
+        ];
+
     }
 
     public function addProduct($idproduct){

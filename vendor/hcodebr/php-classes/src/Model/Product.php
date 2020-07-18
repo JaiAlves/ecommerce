@@ -40,7 +40,7 @@ class Product extends Model {
                         ":vlheight"      =>$this->getvlheight(),
                         ":vllength"      =>$this->getvllength(),
                         ":vlweight"      =>$this->getvlweight(),
-                        ":desurl"      =>$this->getdesurl()
+                        ":desurl"      =>""
     );       
 
         $results = $sql->select($strSql, $array);
@@ -124,6 +124,12 @@ class Product extends Model {
     
             $this->checkPhoto();
         }
+    }
+
+    public function getCategories() {
+        $sql = new Sql();
+
+        return $sql->select("select * from tb_categories a inner join tb_productscategories b on a.idcategory=b.idcategory where b.idproduct =".$this->getidproduct());
     }
 
 }

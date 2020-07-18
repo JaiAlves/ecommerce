@@ -22,7 +22,7 @@ $app->get('/categories/:idcategory', function($idcategory) {
 
     $category->_get((int) $idcategory);
 
-    $pagination = $category->getProductsPage($page);
+    $pagination = $category->getProductsPage($page, 8);
 
     $products =$pagination['data'];
     $total_pages = $pagination['pages'];
@@ -42,6 +42,21 @@ $app->get('/categories/:idcategory', function($idcategory) {
                  ['category'=>$category->getValues(),
                   'products'=>$products,
                   'pages'=>$pages
+    ]);
+
+});
+
+$app->get("/products/:desurl", function($desurl) {
+    $product = new Product();
+
+    //obs minha desurl = idproduct
+    $product->_get((int) $desurl);
+
+    $page = new Page();
+
+    $page->setTpl("product-detail",[
+        'product'=>$product->getValues(),
+        'categories'=>$product->getCategories()
     ]);
 
 });

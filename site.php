@@ -3,6 +3,7 @@
 use \Hcode\Page;
 use \Hcode\Model\Product;
 use \Hcode\Model\Category;
+use \Hcode\Model\Cart;
 
 $app->get('/', function() {
     $products = Product::listAll();
@@ -49,7 +50,7 @@ $app->get('/categories/:idcategory', function($idcategory) {
 $app->get("/products/:desurl", function($desurl) {
     $product = new Product();
 
-    //obs minha desurl = idproduct
+    //obs na procedure que faz o insert eu faco um update no desurl com o valor do idproduct (obtido no insert)
     $product->_get((int) $desurl);
 
     $page = new Page();
@@ -61,4 +62,57 @@ $app->get("/products/:desurl", function($desurl) {
 
 });
 
+$app->get("/cart", function(){
+    $cart = Cart::getFromSession();    
+
+    $page = new Page();
+
+    $data =['cart'=>$cart->getValues(),
+         'products'=>$cart->getProducts()];
+
+    $page->setTpl("cart", 
+                ['cart'=>$cart->getValues(),
+                'products'=>$cart->getProducts()
+            ]);
+});
+
+$app->get("/cart/:idproduct/add", function($idproduct) {
+    $product = new Product();
+    $product->_get((int) $idproduct);
+
+    $cart = Cart::getFromSession();
+
+    $qtd =(isset ($_GET["qtd"])) ? (int)$_GET["qtd"] : 1;
+
+    for ($i=0; $i<$qtd; $i++) {
+        $cart->addProduct($product);
+    }
+
+    header("Location: /cart");
+    exit;
+});
+
+$app->get("/cart/:idproduct/minus", function($idproduct) {
+    $product = new Product();
+    $product->_get((int) $idproduct);
+
+    $cart = Cart::getFromSession();
+
+    $cart->removeProduct($product);
+
+    header("Location: /cart");
+    exit;
+});
+
+$app->get("/cart/:idproduct/remove", function($idproduct) {
+    $product = new Product();
+    $product->_get((int) $idproduct);
+
+    $cart = Cart::getFromSession();
+
+    $cart->removeProduct($product, true);
+
+    header("Location: /cart");
+    exit;
+});
 ?>

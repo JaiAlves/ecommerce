@@ -41,6 +41,7 @@ class Model {
 		
 		foreach ($data as $key => $value){
 			//$lg->log(''.$key.'='.$value);
+			//var_dump(''.$key.'='.$value);
 			$this->{"set".$key}($value);
 		}
 	}

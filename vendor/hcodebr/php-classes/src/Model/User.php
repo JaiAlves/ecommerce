@@ -44,6 +44,23 @@ class User extends Model{
 	public static function logout(){
 		$_SESSION[User::SESSION] = NULL;
     }    
+
+    public static function checkLogin($inadmin = true) {
+        if (!isset($_SESSION[User::SESSION]) || //se a sessao nao foi definida
+            !$_SESSION[User::SESSION] || //se nao existe user na sessao
+            !(int) $_SESSION[User::SESSION]["iduser"] > 0) {
+                return false;
+        } else {
+            if ($inadmin===true) {
+                if ((bool) $_SESSION[User::SESSION]["inadmin"]== $inadmin) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
     
     public static function usuLogado() {
         if (isset($_SESSION[User::SESSION]) && (int) $_SESSION[User::SESSION]["iduser"] > 0) {

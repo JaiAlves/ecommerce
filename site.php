@@ -4,6 +4,7 @@ use \Hcode\Page;
 use \Hcode\Model\Product;
 use \Hcode\Model\Category;
 use \Hcode\Model\Cart;
+use \Hcode\Model\Address;
 
 $app->get('/', function() {
     $products = Product::listAll();
@@ -125,6 +126,17 @@ $app->post("/cart/freight", function(){
 
     header("Location: /cart");
     exit;
+});
+
+$app->get("/checkout", function(){
+    $cart = Cart::getFromSession();
+    $address = new Address();
+
+    $page = new Page();
+    $page->setTpl("checkout", [
+        "cart"=>$cart->getValues(),
+        "address"=>$address->getValues()
+    ]);
 });
 
 ?>

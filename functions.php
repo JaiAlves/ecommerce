@@ -4,6 +4,7 @@ use \Hcode\Util\Variaveis;
 use Hcode\Model\User;
 
 function formatPrice(float $value) {
+    if ($value==NULL) $value=(float)0;
     return number_format($value, 2, ",", ".");
 }
 

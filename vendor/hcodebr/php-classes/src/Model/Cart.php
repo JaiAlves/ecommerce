@@ -12,8 +12,15 @@ class Cart extends Model {
 
     public static function getFromSession() {
         $cart = new Cart();
+        $cart->setvlfreight((float) 0);
+        $cart->setvlsubtotal((float) 0);
+        $cart->setvltotal((float) 0);
+
         if (isset($_SESSION[Cart::SESSION]) && (int)$_SESSION[Cart::SESSION]['idcart']>0) {
             $cart->get((int) $_SESSION[Cart::SESSION]['idcart']);
+            if ($cart->getvlfreight()==NULL)$cart->setvlfreight((float) 0);
+            if ($cart->getvlsubtotal()==NULL)$cart->setvlsubtotal((float) 0);
+            if ($cart->getvltotal()==NULL)$cart->setvltotal((float) 0);
         } else {
             $cart->getFromSessionID();
 
@@ -21,7 +28,6 @@ class Cart extends Model {
         
                 $cart->setdessessionid(session_id());
                 $cart->setdeszipcode(null);
-                $cart->setvlfreight(null);
                 $cart->setnrdays(null);
                 $cart->setiduser(null);
 

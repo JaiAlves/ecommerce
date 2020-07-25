@@ -57,9 +57,10 @@ class User extends Model{
                 }
                 return false;
             }
+            return true;
         }
 
-        return true;
+        return false;
     }
     
     public static function usuLogado() {
@@ -75,15 +76,31 @@ class User extends Model{
     }
 
     public static function verifyLogin($inadmin = true) {
-        if (!isset($_SESSION[User::SESSION]) || //se a sessao nao foi definida
-            !$_SESSION[User::SESSION] || //se nao existe user na sessao
-            !(int) $_SESSION[User::SESSION]["iduser"] > 0 || //se o id do user na sessao nao for maior q zero
-            (bool) $_SESSION[User::SESSION]["inadmin"]!== $inadmin) { //se o user da sessao nao for admin
-
-            //Entao redireciona para pagina de login
-            header("Location: ".Variaveis::_getPathApp()."/admin/login");
+        if (!User::checkLogin($inadmin)) {
+            if ($inadmin) {
+                header("Location: ".Variaveis::_getPathApp()."/admin/login");
+            } else {
+                header("Location: ".Variaveis::_getPathApp()."/login");
+            }
             exit;
         }
+
+        /*
+        if ($inadmin==true) {
+            if (!isset($_SESSION[User::SESSION]) || //se a sessao nao foi definida
+                !$_SESSION[User::SESSION] || //se nao existe user na sessao
+                !(int) $_SESSION[User::SESSION]["iduser"] > 0 || //se o id do user na sessao nao for maior q zero
+                (bool) $_SESSION[User::SESSION]["inadmin"]!== $inadmin) { //se o user da sessao nao for admin
+
+                //Entao redireciona para pagina de login
+                header("Location: ".Variaveis::_getPathApp()."/admin/login");
+                exit;
+            }
+        } else {
+            header("Location: ".Variaveis::_getPathApp()."/login");
+            exit;
+        }
+        */
     }
 
     public function _get($iduser) {

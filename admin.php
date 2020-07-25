@@ -12,8 +12,6 @@ $app->get('/admin', function() {
 
     $iduser = (int) $_SESSION[User::SESSION]["iduser"];
 
-    $lg = new Lg();
-    $lg->log("[rota admin] iduser =".$iduser);
 
     $user->_get((int) $iduser);
 

@@ -4,6 +4,7 @@ use \Hcode\Page;
 use \Hcode\Model\Product;
 use \Hcode\Model\Category;
 use \Hcode\Model\Cart;
+use \Hcode\Model\User;
 use \Hcode\Model\Address;
 
 $app->get('/', function() {
@@ -129,6 +130,8 @@ $app->post("/cart/freight", function(){
 });
 
 $app->get("/checkout", function(){
+    User::verifyLogin(false);
+
     $cart = Cart::getFromSession();
     $address = new Address();
 
@@ -137,6 +140,13 @@ $app->get("/checkout", function(){
         "cart"=>$cart->getValues(),
         "address"=>$address->getValues()
     ]);
+});
+
+
+$app->get("/login", function(){
+
+    $page = new Page();
+    $page->setTpl("login");
 });
 
 ?>

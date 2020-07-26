@@ -9,6 +9,7 @@ use \Hcode\Util\Variaveis;
 class Cart extends Model {
     const SESSION = "Cart";
     const SESSION_ERROR="CartError";
+    const CEP_ORIGEM="13185072";
 
     public static function getFromSession() {
         $cart = new Cart();
@@ -178,7 +179,7 @@ class Cart extends Model {
     public function setFreight($nrzipcode) {
         $nrzipcode = str_replace("-","",$nrzipcode);
 
-        $totals = $this->getProductsTotals();
+        $totals = $this->getProductsTotals(); 
 
         if ($nrzipcode!="" && $totals['nrqtd'] >0) {
             if($totals['vlheight']<2) $totals['vlheight']=2;
@@ -189,7 +190,7 @@ class Cart extends Model {
                 'nCdEmpresa'=>'',
                 'sDsSenha'=>'',
                 'nCdServico'=>'40010',
-                'sCepOrigem'=>'09853120',
+                'sCepOrigem'=>Cart::CEP_ORIGEM,
                 'sCepDestino'=>$nrzipcode ,
                 'nVlPeso'=>$totals['vlweight'],
                 'nCdFormato'=>'1',
@@ -207,8 +208,20 @@ class Cart extends Model {
            $xml = simplexml_load_file("http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?".$qs);
 
            $result = $xml->Servicos->cServico;
-
-            if ($result->Erro!="0") {
+/*
+           $result = [
+                'Valor'=>(isset($result->Valor)?(string)$result->valor:''),
+                'PrazoEntrega'=>(isset($result->PrazoEntrega)?(string)$result->PrazoEntrega:''),
+                'ValorMaoPropria'=>(isset($result->ValorMaoPropria)?(string)$result->ValorMaoPropria:''),
+                'ValorAvisoRecebimento'=>(isset($result->ValorAvisoRecebimento)?(string)$result->ValorAvisoRecebimento:''),
+                'ValorValorDeclarado'=>(isset($result->ValorValorDeclarado)?(string)$result->ValorValorDeclarado:''),
+                'EntregaDomiciliar'=>(isset($result->EntregaDomiciliar)?(string)$result->EntregaDomiciliar:''),
+                'EntregaSabado'=>(isset($result->EntregaSabado)?(string)$result->EntregaSabado:''),
+                'Erro'=>(isset($result->Erro)?(string)$result->Erro:''),
+                'MsgErro'=>(isset($result->MsgErro)?(string)$result->MsgErro:'')
+           ];
+*/
+            if (isset($result->Erro) && $result->Erro!="0" && $result->Erro!="011") {
                 Cart::setMsgError($result->MsgErro);
                 return;
             }  else {
@@ -216,8 +229,8 @@ class Cart extends Model {
             }
             
 
-            $this->setnrdays($result->PrazoEntrega);
-            $this->setvlfreight(Cart::formatValueToDecimal($result->Valor));
+            $this->setnrdays(isset($result->PrazoEntrega)?$result->PrazoEntrega:'');
+            $this->setvlfreight(Cart::formatValueToDecimal(isset($result->Valor)?$result->Valor:'0'));
             $this->setdeszipcode($nrzipcode);
 
             $this->save();
@@ -225,26 +238,6 @@ class Cart extends Model {
             return  $result;
            
         } 
-            /*
-            {
-                "Servicos": {
-                    "cServico": {
-                        "Codigo": "40010",
-                        "Valor": "21,00",
-                        "PrazoEntrega": "3",
-                        "ValorMaoPropria": "0,00",
-                        "ValorAvisoRecebimento": "0,00",
-                        "ValorValorDeclarado": "0,00",
-                        "EntregaDomiciliar": "S",
-                        "EntregaSabado": "S",
-                        "Erro": "0",
-                        "MsgErro": {},
-                        "ValorSemAdicionais": "21,00",
-                        "obsFim": {}
-                    }
-                }
-            }
-            */  
     }
 
     public static function setMsgError($msg) {
@@ -256,7 +249,13 @@ class Cart extends Model {
     }
 
     public static function getMsgError() {
-        $msg = (isset($_SESSION[Cart::SESSION_ERROR])) ? $_SESSION[Cart::SESSION_ERROR] : "";
+        if (isset($_SESSION[Cart::SESSION_ERROR])) {
+            $msg =  $_SESSION[Cart::SESSION_ERROR];
+        } else {
+            $msg =  "";
+        }
+        //exit;
+
         Cart::clearMsgError();
 
         return $msg;

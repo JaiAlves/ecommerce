@@ -1,3 +1,4 @@
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_products_save`(
 pidproduct int(11),
 pdesproduct varchar(64),

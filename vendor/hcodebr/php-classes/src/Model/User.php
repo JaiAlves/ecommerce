@@ -12,6 +12,8 @@ class User extends Model{
     const SECRET = "@12345$7890*2345";
     const ALGORITIMO = "AES-256-CBC";
     const IV = "wNYtCnelXfOa6uiJ";
+    const ERROR = "UserError";
+    const ERROR_REGISTER = "UserEroorRegister";
     
 
     public static function login($login, $password) {
@@ -22,7 +24,7 @@ class User extends Model{
 		));
 
 		if (count($results) === 0) {
-			throw new \Exception("Não foi possível fazer login.");
+			throw new \Exception("Usuario inexistente ou senha inválida.");
 		}
 
 		$data = $results[0];
@@ -30,6 +32,7 @@ class User extends Model{
         if (password_verify($password, $data["despassword"])) {
             $user = new User();
 
+            //$data['deslogin'] = utf8_encode($data['deslogin']); //arruma acentuacao
             $user->setData($data);
 
             $_SESSION[User::SESSION] = $user->getValues();
@@ -38,6 +41,20 @@ class User extends Model{
         } else {
             throw new \Exception("Usuario inexistente ou senha inválida.", 1);
         }
+    }
+
+    public static function setError($msg) {
+        $_SESSION[User::ERROR] = $msg;
+    }
+
+    public static function getError() {
+        $msg = (isset($_SESSION[User::ERROR]) && $_SESSION[User::ERROR]) ? $_SESSION[User::ERROR] : '';
+        User::clearError();
+        return $msg;
+    }
+
+    public static function clearError() {
+        $_SESSION[User::ERROR] = NULL;
     }
 
 
@@ -84,23 +101,6 @@ class User extends Model{
             }
             exit;
         }
-
-        /*
-        if ($inadmin==true) {
-            if (!isset($_SESSION[User::SESSION]) || //se a sessao nao foi definida
-                !$_SESSION[User::SESSION] || //se nao existe user na sessao
-                !(int) $_SESSION[User::SESSION]["iduser"] > 0 || //se o id do user na sessao nao for maior q zero
-                (bool) $_SESSION[User::SESSION]["inadmin"]!== $inadmin) { //se o user da sessao nao for admin
-
-                //Entao redireciona para pagina de login
-                header("Location: ".Variaveis::_getPathApp()."/admin/login");
-                exit;
-            }
-        } else {
-            header("Location: ".Variaveis::_getPathApp()."/login");
-            exit;
-        }
-        */
     }
 
     public function _get($iduser) {
@@ -114,7 +114,9 @@ class User extends Model{
         }
         //$lg->log("results[0]=".implode(";", $results));
 
-        $this->setData($results[0]);
+        $data = $results[0];
+        $data['desperson'] = utf8_encode($data['desperson']);
+        $this->setData($data);
     }
 
     public static function listAll() {
@@ -148,9 +150,9 @@ class User extends Model{
         $strSql = "CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)";
 
         $array =  array(":iduser"=>$this->getiduser(),
-                        ":desperson"    =>$this->getdesperson(), 
+                        ":desperson"    =>utf8_decode($this->getdesperson()), 
                         ":deslogin"     =>$this->getdeslogin(), 
-                        ":despassword"  =>$this->getdespassword(), 
+                        ":despassword"  =>User::getPasswordHash($this->getdespassword()), 
                         ":desemail"     =>$this->getdesemail(), 
                         ":nrphone"      =>$this->getnrphone(), 
                         ":inadmin"      =>$this->getinadmin());        
@@ -164,9 +166,9 @@ class User extends Model{
         $sql = new Sql();
         $strSql = "CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)";
 
-        $array =  array(":desperson"    =>$this->getdesperson(), 
+        $array =  array(":desperson"    =>utf8_decode($this->getdesperson()), 
                         ":deslogin"     =>$this->getdeslogin(), 
-                        ":despassword"  =>$this->getdespassword(), 
+                        ":despassword"  =>User::getPasswordHash($this->getdespassword()), 
                         ":desemail"     =>$this->getdesemail(), 
                         ":nrphone"      =>$this->getnrphone(), 
                         ":inadmin"      =>$this->getinadmin());        
@@ -273,6 +275,10 @@ class User extends Model{
         $strSql ="UPDATE tb_users SET despassword=:despassword WHERE iduser= :iduser";
         $sql->query($strSql, array(":despassword"=>$password,":iduser"=>$iduser));
 
+    }
+
+    public static function getPasswordHash($password) {
+        return password_hash($password, PASSWORD_DEFAULT, ['cost'=>12]);
     }
 
 }

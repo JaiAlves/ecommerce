@@ -15,8 +15,11 @@ function pathLink() {
     return Variaveis::_getPathApp();
 }
 
+function checkLogin($inadmin = true) {
+    return User::checkLogin($inadmin);
+}
 
-function usuLogado() {
+function getUserName() {
     $usu = User::usuLogado();
 
     if ($usu!=null) {

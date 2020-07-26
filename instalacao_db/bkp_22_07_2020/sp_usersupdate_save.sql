@@ -1,3 +1,4 @@
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_usersupdate_save`(
 piduser INT,
 pdesperson VARCHAR(64), 
